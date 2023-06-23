@@ -57,9 +57,6 @@ jobs:
           file: ./PasswordPusher.Api/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
       - 
         name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
