@@ -1,4 +1,9 @@
 terraform {
+  # backend "s3" {
+  #       bucket = "terraformpasswordpusherstate"
+  #       key    = "state-dev.tfstate"
+  #       region = "eu-central-1"
+  #   }
   required_providers {
     aws = {
       source  = "hashicorp/aws"

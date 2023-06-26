@@ -9,3 +9,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 ENTRYPOINT ["dotnet", "PasswordPusher.Api.dll"]
+
+HEALTHCHECK CMD curl --fail http://localhost:80/healthz || exit

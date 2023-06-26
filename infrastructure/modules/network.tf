@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "password_pusher_target_group" {
   vpc_id      = "${aws_default_vpc.default_vpc.id}"
   health_check {
     matcher = "200,301,302"
-    path = "/WeatherForecast"
+    path = "/healthz"
   }
 }
 
