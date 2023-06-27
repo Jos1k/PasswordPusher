@@ -22,15 +22,11 @@ provider "aws" {
 module "main" {
   source      = "../modules"
   environment = "dev"
-  container_tag = var.container_tag
-
-  providers = {
-    aws = aws,
-    aws.dev = aws
-  }
+  container_image = var.container_image
 }
 
-variable "container_tag" {}
-locals {
-  app_name = "password-pusher"
+variable "container_image" {
+  type        = string
+  description = "Docker image for ECS task"
+  default = "ghcr.io/jos1k/passwordpusher-api:main"
 }
