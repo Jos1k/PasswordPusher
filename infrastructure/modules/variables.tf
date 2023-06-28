@@ -2,13 +2,11 @@
 variable "domain_name" {
   type        = string
   description = "The domain name"
-  default     = "pw-pusher.click"
 }
 
 variable "r53_zone_id" {
   type        = string
   description = "The zone ID of the domain"
-  default     = "Z0718599212MVN64WNQI1"
 }
 
 variable "instance_type" {

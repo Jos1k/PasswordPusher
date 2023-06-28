@@ -21,12 +21,19 @@ provider "aws" {
 
 module "main" {
   source      = "../modules"
-  environment = "dev"
   container_image = var.container_image
+  environment = "dev"
+  domain_name = "dev.pw-pusher.click"
+  r53_zone_id = var.r53_zone_id
 }
 
 variable "container_image" {
   type        = string
   description = "Docker image for ECS task"
   default = "ghcr.io/jos1k/passwordpusher-api:main"
+}
+
+variable "r53_zone_id" {
+  type = string
+  description = "Route 53 Hosted Zone Id"
 }
