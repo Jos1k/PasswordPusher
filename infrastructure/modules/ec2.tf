@@ -11,15 +11,7 @@ resource "aws_instance" "ec2_instance" {
   }
   user_data              = <<EOF
     #!/bin/bash
-
-    # sudo amazon-linux-extras install -y ecs;
-
-    sudo amazon-linux-extras disable docker
-    sudo systemctl disable ecs
     echo ECS_CLUSTER=ecs-${var.app_name}-api-${var.environment} >> /etc/ecs/ecs.config
-
-    # cat /etc/ecs/ecs.config | grep "ECS_CLUSTER"
-    sudo systemctl enable --now ecs
   EOF
 
   root_block_device {

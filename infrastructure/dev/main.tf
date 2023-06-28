@@ -24,7 +24,7 @@ module "main" {
   container_image = var.container_image
   environment = "dev"
   domain_name = "dev.pw-pusher.click"
-  r53_zone_id = "Z05580103EMUSO7AOK8E2"
+  r53_zone_id = var.r53_zone_id
 }
 
 variable "container_image" {
