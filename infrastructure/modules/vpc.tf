@@ -13,18 +13,18 @@ module "vpc" {
   create_database_subnet_group = false
   enable_dns_hostnames         = true
 
-  enable_nat_gateway  = true
-  single_nat_gateway  = true
-  reuse_nat_ips       = true
-  external_nat_ip_ids = aws_eip.eip_nat.*.id
+  enable_nat_gateway  = false
+  single_nat_gateway  = false
+  reuse_nat_ips       = false
+  # external_nat_ip_ids = aws_eip.eip_nat.*.id
   tags = {
     Name = "${var.app_name}-api-${var.environment}"
   }
 }
 
-resource "aws_eip" "eip_nat" {
-  domain = "vpc"
-  tags = {
-    Name = "${var.app_name}-api-${var.environment}"
-  }
-}
+# resource "aws_eip" "eip_nat" {
+#   domain = "vpc"
+#   tags = {
+#     Name = "${var.app_name}-api-${var.environment}"
+#   }
+# }
