@@ -17,6 +17,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: dev
+    outputs:
+      dockerTags: ${{ steps.meta.outputs.tags }}
     steps:
       -
         name: Checkout
@@ -66,8 +68,70 @@ jobs:
           account-type: personal
           untagged-only: true
           token: ${{ secrets.PAT }}
+  infrastructure_plan:
+    if: ${{ success() && github.event_name = 'pull_request' && github.base_ref == 'main'}}
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.x
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -var r53_zone_id=${{secrets.HOSTED_ZONE_ID}} -var domain_name=${{vars.DOMAIN}} -var container_image=${{env.REGISTRY }}/jos1k/passwordpusher-api:${{needs.build.outputs.dockerTags}}
+        continue-on-error: true
+      - name: Create the plan summary
+        uses: actions/github-script@v6
+        id: summary
+        env:
+          PLAN: '${{ steps.plan.outputs.stdout }}'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Prep the output
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+            </details>
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            
+            <details><summary>Show Plan</summary>
+            
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            
+            </details>
+            
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+            // 2. Set the output variable
+            const fs = require('fs');
+            fs.writeFileSync('${{ env.tf_actions_working_dir }}/summary.md', output);
+            core.setOutput('summary', output);
+      - name: Write the step summary
+        run: cat summary.md >> $GITHUB_STEP_SUMMARY
   deploy:
-    if: ${{ github.event_name != 'schedule' && github.ref == 'refs/heads/main'}}
+    if: ${{ success() && github.event_name != 'push' && github.ref == 'refs/heads/main'}}
     runs-on: ubuntu-latest
     environment: dev
     needs: build
@@ -76,6 +140,10 @@ jobs:
       contents: read
 
     steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.x
       - 
         name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2

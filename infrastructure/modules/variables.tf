@@ -21,25 +21,25 @@ variable "container_image" {
 }
 
 variable "app_name" {
-  type = string
+  type        = string
   description = "Application name"
-  default = "pw-pusher"
+  default     = "pw-pusher"
 }
 
 variable "environment" {
-  type = string
+  type        = string
   description = "Environment"
-  default = "dev"
+  default     = "dev"
 }
 
 variable "task_count" {
-  type = number
+  type        = number
   description = "Number of running ECS tasks"
-  default = 1
+  default     = 1
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "Region"
-  default = "eu-central-1"
+  default     = "eu-central-1"
 }

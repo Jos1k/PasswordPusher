@@ -1,9 +1,9 @@
 terraform {
-  # backend "s3" {
-  #       bucket = "terraformpasswordpusherstate"
-  #       key    = "state-dev.tfstate"
-  #       region = "eu-central-1"
-  #   }
+  backend "s3" {
+    bucket = "terraformpasswordpusherstate"
+    key    = "state-dev.tfstate"
+    region = "eu-central-1"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -20,11 +20,11 @@ provider "aws" {
 }
 
 module "main" {
-  source      = "../modules"
+  source          = "../modules"
   container_image = var.container_image
-  environment = "dev"
-  domain_name = var.domain_name
-  r53_zone_id = var.r53_zone_id
+  environment     = "dev"
+  domain_name     = var.domain_name
+  r53_zone_id     = var.r53_zone_id
 }
 
 variable "container_image" {
@@ -38,6 +38,6 @@ variable "domain_name" {
 }
 
 variable "r53_zone_id" {
-  type = string
+  type        = string
   description = "Route 53 Hosted Zone Id"
 }
