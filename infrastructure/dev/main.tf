@@ -23,7 +23,7 @@ module "main" {
   source      = "../modules"
   container_image = var.container_image
   environment = "dev"
-  domain_name = "dev.pw-pusher.click"
+  domain_name = var.domain_name
   r53_zone_id = var.r53_zone_id
 }
 
@@ -31,6 +31,11 @@ variable "container_image" {
   type        = string
   description = "Docker image for ECS task"
   default = "ghcr.io/jos1k/passwordpusher-api:main"
+}
+
+variable "domain_name" {
+  type        = string
+  description = "Domain name"
 }
 
 variable "r53_zone_id" {
