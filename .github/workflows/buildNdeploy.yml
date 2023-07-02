@@ -3,12 +3,12 @@ name: Build and Deploy
 on:
   schedule:
     - cron: "0 1 * * *"
-  # push:
-  #   branches: [ "main" ]
-  #   tags:
-  #     - "v*.*.*"
-  # pull_request:
-  #   branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
@@ -57,24 +57,34 @@ jobs:
           file: ./PasswordPusher.Api/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   environment: dev
-  #   needs: build
-  #   permissions:
-  #     id-token: write
-  #     contents: read
+      - name: Delete old untagged images
+        uses: snok/container-retention-policy@v2
+        with:
+          image-names: passwordpusher-api*
+          cut-off: One minute ago UTC
+          keep-at-least: 0
+          account-type: personal
+          untagged-only: true
+          token: ${{ secrets.PAT }}
+  deploy:
+    if: ${{ github.event_name != 'schedule' && github.ref == 'refs/heads/main'}}
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
 
-  #   steps:
-  #     - 
-  #       name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v2
-  #       with:
-  #         role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
-  #         aws-region: ${{vars.AWS_REGION}}
-  #     - 
-  #       name: Sts GetCallerIdentity
-  #       run: |
-  #         aws sts get-caller-identity
+    steps:
+      - 
+        name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
+          aws-region: ${{vars.AWS_REGION}}
+      - 
+        name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
 
 
