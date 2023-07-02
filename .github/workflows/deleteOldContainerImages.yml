@@ -1,0 +1,20 @@
+name: Delete old container images
+
+on:
+  schedule:
+    - cron: '0 0 0 * * *'
+    
+jobs:
+  clean-ghcr:
+    name: Delete old unused container images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old images
+        uses: snok/container-retention-policy@v2
+        with:
+          image-names: passwordpusher-api/*
+          cut-off: One day ago UTC
+          keep-at-least: 2
+          account-type: personal
+          filter-tags: "sha*, nightly-*"
+          token: ${{ secrets.PAT }}
