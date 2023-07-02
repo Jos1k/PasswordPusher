@@ -30,7 +30,6 @@ module "main" {
 variable "container_image" {
   type        = string
   description = "Docker image for ECS task"
-  default = "ghcr.io/jos1k/passwordpusher-api:main"
 }
 
 variable "domain_name" {
