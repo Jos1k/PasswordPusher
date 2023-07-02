@@ -18,5 +18,5 @@ jobs:
           cut-off: One day ago UTC
           keep-at-least: 2
           account-type: personal
-          filter-tags: "sha*, nightly-*"
+          filter-tags: sha*, nightly-*
           token: ${{ secrets.PAT }}

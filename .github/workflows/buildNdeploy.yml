@@ -57,24 +57,24 @@ jobs:
           file: ./PasswordPusher.Api/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  deploy:
-    runs-on: ubuntu-latest
-    environment: dev
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   environment: dev
+  #   needs: build
+  #   permissions:
+  #     id-token: write
+  #     contents: read
 
-    steps:
-      - 
-        name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
-          aws-region: ${{vars.AWS_REGION}}
-      - 
-        name: Sts GetCallerIdentity
-        run: |
-          aws sts get-caller-identity
+  #   steps:
+  #     - 
+  #       name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
+  #         aws-region: ${{vars.AWS_REGION}}
+  #     - 
+  #       name: Sts GetCallerIdentity
+  #       run: |
+  #         aws sts get-caller-identity
 
 
