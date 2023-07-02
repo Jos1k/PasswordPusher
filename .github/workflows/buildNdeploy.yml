@@ -69,7 +69,7 @@ jobs:
           account-type: personal
           untagged-only: true
           token: ${{ secrets.PAT }}
-  infrastructure_plan:
+  plan:
     runs-on: ubuntu-latest
     environment: dev
     needs: build
@@ -85,6 +85,11 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
+          aws-region: ${{vars.AWS_REGION}}
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
@@ -139,7 +144,7 @@ jobs:
     if: ${{ success() && github.event_name != 'push' && github.ref == 'refs/heads/main'}}
     runs-on: ubuntu-latest
     environment: dev
-    needs: [build, infrastructure_plan]
+    needs: [build, plan]
     permissions:
       id-token: write
       contents: read
