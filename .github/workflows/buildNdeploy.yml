@@ -36,7 +36,7 @@ jobs:
             type=semver,pattern={{version}}
             type=ref,event=branch
             type=ref,event=pr
-            type=sha
+            type=sha,priority=1001
           labels : |
             org.opencontainers.image.description=Password Pusher API image
             org.opencontainers.image.vendor=Ihor Hadzera
