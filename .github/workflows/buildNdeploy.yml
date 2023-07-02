@@ -61,7 +61,7 @@ jobs:
         uses: snok/container-retention-policy@v2
         with:
           image-names: passwordpusher-api*
-          cut-off: One minute ago UTC
+          cut-off: One second ago UTC
           keep-at-least: 0
           account-type: personal
           untagged-only: true
