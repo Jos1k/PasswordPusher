@@ -12,6 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  tf_actions_working_dir: infrastructure/dev
 
 jobs:
   build:
