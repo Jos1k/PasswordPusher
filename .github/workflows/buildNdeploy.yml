@@ -166,6 +166,7 @@ jobs:
       contents: read
 
     steps:
+      - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.1
