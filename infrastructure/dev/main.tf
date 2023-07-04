@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "terraformpasswordpusherstate"
+    bucket = "terraformpasswordpusherdevstate"
     key    = "state-dev.tfstate"
     region = "eu-central-1"
   }
