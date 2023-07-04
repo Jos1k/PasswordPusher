@@ -2,7 +2,7 @@ resource "aws_security_group" "public" {
   name        = "Allow public HTTP/HTTPS ALB"
   description = "Public internet access"
   vpc_id      = module.vpc.vpc_id
-  tags                   = {
+  tags = {
     Name = "${var.app_name}-${var.environment}-public-sg"
   }
 }
@@ -42,7 +42,7 @@ resource "aws_security_group" "ec2" {
   name        = "Allow traffic from ALB"
   description = "Allow traffic from ALB"
   vpc_id      = module.vpc.vpc_id
-  tags                   = {
+  tags = {
     Name = "${var.app_name}-${var.environment}-ec2-sg"
   }
 }
@@ -58,10 +58,10 @@ resource "aws_security_group_rule" "ec2_out" {
 }
 
 resource "aws_security_group_rule" "ec2_in_http" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
   source_security_group_id = aws_security_group.public.id
-  security_group_id = aws_security_group.ec2.id
+  security_group_id        = aws_security_group.ec2.id
 }

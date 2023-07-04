@@ -12,11 +12,15 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  tf_actions_working_dir: infrastructure/dev
 
 jobs:
   build:
+    name: Build and Publish
     runs-on: ubuntu-latest
     environment: dev
+    outputs:
+      dockerMetaJson: ${{ steps.meta.outputs.json }}
     steps:
       -
         name: Checkout
@@ -33,7 +37,7 @@ jobs:
             type=semver,pattern={{version}}
             type=ref,event=branch
             type=ref,event=pr
-            type=sha
+            type=sha,priority=1001
           labels : |
             org.opencontainers.image.description=Password Pusher API image
             org.opencontainers.image.vendor=Ihor Hadzera
@@ -57,34 +61,101 @@ jobs:
           file: ./PasswordPusher.Api/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Delete old untagged images
-        uses: snok/container-retention-policy@v2
-        with:
-          image-names: passwordpusher-api*
-          cut-off: One second ago UTC
-          keep-at-least: 0
-          account-type: personal
-          untagged-only: true
-          token: ${{ secrets.PAT }}
-  deploy:
-    if: ${{ github.event_name != 'schedule' && github.ref == 'refs/heads/main'}}
+  planAndDeploy:
+    name: Plan And Deploy
     runs-on: ubuntu-latest
     environment: dev
     needs: build
+    defaults:
+      run:
+        working-directory: ${{ env.tf_actions_working_dir }}
     permissions:
       id-token: write
       contents: read
-
+      pull-requests: write
     steps:
-      - 
-        name: Configure AWS Credentials
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
+          role-to-assume: ${{secrets.AWS_AUTH_ROLE}}
           aws-region: ${{vars.AWS_REGION}}
-      - 
-        name: Sts GetCallerIdentity
-        run: |
-          aws sts get-caller-identity
-
-
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.1
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -var r53_zone_id=${{secrets.HOSTED_ZONE_ID}} -var domain_name=${{vars.DOMAIN}} -var container_image=${{fromJson(needs.build.outputs.dockerMetaJson).tags[0]}} -out tf.plan
+        continue-on-error: true
+      - name: Create the plan summary
+        if: ${{github.event_name == 'pull_request'}}
+        uses: actions/github-script@v6
+        id: comment
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+      
+            // 2. Prepare format of the comment
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+      
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+      
+            </details>
+      
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      
+            <details><summary>Show Plan</summary>
+      
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+      
+            </details>
+      
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+      
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -no-color -input=false -auto-approve tf.plan

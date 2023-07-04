@@ -1,0 +1,44 @@
+name: Deploy Prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version (tag)'
+        required: true
+
+env:
+  REGISTRY: ghcr.io/jos1k/passwordpusher-api
+  tf_actions_working_dir: infrastructure/prod
+
+jobs:
+  deploy_stp:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: prod
+    defaults:
+      run:
+        working-directory: ${{ env.tf_actions_working_dir }}
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.version_tag}}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{secrets.AWS_AUTH_ROLE}}
+          aws-region: ${{vars.AWS_REGION}}
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.1
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        continue-on-error: true
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -no-color -input=false -var r53_zone_id=${{secrets.HOSTED_ZONE_ID}} -var domain_name=${{vars.DOMAIN}} -var container_image=${{format(':', env.REGISTRY, inputs.version_tag)}} -auto-approve

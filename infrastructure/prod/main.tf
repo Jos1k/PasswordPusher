@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "terraformpasswordpusherdevstate"
-    key    = "state-dev.tfstate"
+    bucket = "terraformpasswordpusherstate"
+    key    = "state.tfstate"
     region = "eu-central-1"
   }
   required_providers {
@@ -22,7 +22,7 @@ provider "aws" {
 module "main" {
   source          = "../modules"
   container_image = var.container_image
-  environment     = "dev"
+  environment     = "prod"
   domain_name     = var.domain_name
   r53_zone_id     = var.r53_zone_id
 }
