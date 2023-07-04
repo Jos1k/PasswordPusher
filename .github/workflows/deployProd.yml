@@ -12,15 +12,10 @@ env:
   tf_actions_working_dir: infrastructure/prod
 
 jobs:
-  build:
-    name: Build and Publish
-    runs-on: ubuntu-latest
-    environment: prod
-  planAndDeploy:
+  deploy_stp:
     name: Deploy
     runs-on: ubuntu-latest
     environment: prod
-    needs: build
     defaults:
       run:
         working-directory: ${{ env.tf_actions_working_dir }}
