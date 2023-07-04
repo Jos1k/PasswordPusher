@@ -79,7 +79,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::634610596057:role/GitHubAction-AssumeRoleWithAction
+          role-to-assume: ${{secrets.AWS_AUTH_ROLE}}
           aws-region: ${{vars.AWS_REGION}}
       - name: Terraform fmt
         id: fmt
@@ -166,7 +166,6 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.1
