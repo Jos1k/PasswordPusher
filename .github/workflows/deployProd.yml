@@ -41,4 +41,4 @@ jobs:
         continue-on-error: true
       - name: Terraform Apply
         id: apply
-        run: terraform apply -no-color -input=false -var r53_zone_id=${{secrets.HOSTED_ZONE_ID}} -var domain_name=${{vars.DOMAIN}} -var container_image=${{format('{0}:{1}', env.REGISTRY, inputs.version_tag)}} -var alarm_email=${{secrets.ALARM_EMAIL}} -auto-approve
+        run: terraform apply -no-color -input=false -var r53_zone_id=${{secrets.HOSTED_ZONE_ID}} -var domain_name=${{vars.DOMAIN}} -var container_image=${{format('{0}:{1}', env.REGISTRY, inputs.version_tag)}} -var alarm_email=${{secrets.ALARM_EMAIL}} -var newrelic_account_id=${{secrets.NEW_RELIC_ACCOUNT_ID}} -var newrelic_api_key=${{secrets.NEW_RELIC_API_KEY}} -auto-approve

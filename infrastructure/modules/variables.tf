@@ -85,3 +85,8 @@ variable "alarm_email" {
   description = "Email to which send alarm"
   type        = string
 }
+
+variable "newrelic_account_id" {
+  type        = string
+  description = "Newrelic accountId"
+}

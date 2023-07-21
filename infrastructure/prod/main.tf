@@ -9,6 +9,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.5.0"
     }
+    newrelic = {
+      source = "newrelic/newrelic"
+    }
   }
 
   required_version = "= 1.5.1"
@@ -19,6 +22,12 @@ provider "aws" {
   region = "eu-central-1"
 }
 
+provider "newrelic" {
+  account_id = var.newrelic_account_id
+  api_key    = var.newrelic_api_key
+  region     = "EU"
+}
+
 module "main" {
   source               = "../modules"
   container_image      = var.container_image
@@ -27,6 +36,7 @@ module "main" {
   r53_zone_id          = var.r53_zone_id
   account_budget_limit = 3
   alarm_email          = var.alarm_email
+  newrelic_account_id  = var.newrelic_account_id
 }
 
 variable "container_image" {
@@ -47,4 +57,14 @@ variable "r53_zone_id" {
 variable "alarm_email" {
   type        = string
   description = "Email to which send alarm"
+}
+
+variable "newrelic_account_id" {
+  type        = string
+  description = "Newrelic accountId"
+}
+
+variable "newrelic_api_key" {
+  type        = string
+  description = "Newrelic api key"
 }
