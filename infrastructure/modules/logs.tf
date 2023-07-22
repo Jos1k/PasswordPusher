@@ -4,5 +4,5 @@ module "solutions_cloudwatch-log-retention-manager" {
   tags                              = { Name = "${var.app_name}-api-${var.environment}" }
   memory_size                       = 128
   putin_khuylo                      = true
-  schedule_expression               = "rate(1 minute)"
+  schedule_expression               = "rate(24 hours)"
 }
