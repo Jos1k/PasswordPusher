@@ -85,9 +85,3 @@ variable "alarm_email" {
   description = "Email to which send alarm"
   type        = string
 }
-
-variable "logs_retention_in_days" {
-  description = "Retention period for logs in days"
-  type        = number
-  default     = 7
-}
