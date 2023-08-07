@@ -20,11 +20,13 @@ provider "aws" {
 }
 
 module "main" {
-  source          = "../modules"
-  container_image = var.container_image
-  environment     = "prod"
-  domain_name     = var.domain_name
-  r53_zone_id     = var.r53_zone_id
+  source               = "../modules"
+  container_image      = var.container_image
+  environment          = "prod"
+  domain_name          = var.domain_name
+  r53_zone_id          = var.r53_zone_id
+  account_budget_limit = 3
+  alarm_email          = var.alarm_email
 }
 
 variable "container_image" {
@@ -40,4 +42,9 @@ variable "domain_name" {
 variable "r53_zone_id" {
   type        = string
   description = "Route 53 Hosted Zone Id"
+}
+
+variable "alarm_email" {
+  type        = string
+  description = "Email to which send alarm"
 }

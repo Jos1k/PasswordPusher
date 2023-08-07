@@ -21,6 +21,11 @@ That is suppose to be a pet project for building small but usefull service to he
 ## Architecture
 ![Architecture](./docs/password-pusher.png)
 
+## Monitoring & Alerts
+### Alerts:
+- Account cost alert -> ***if overall account cost greater than actual X USD/month, then send email alert***
+- Service cost alert -> ***if particular service (configurable) cost greater than actual X USD/month, then send email alert***
+
 ## Deployment
 ### Development
 Deployment for [Development environment](https://dev.pw-pusher.click) is done automatically by pipeline [![Build and Deploy Dev](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml/badge.svg?branch=main)](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml) during creating Pull Requests, and after push/tag of master.

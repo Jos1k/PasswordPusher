@@ -4,6 +4,6 @@
 **/.terraform*
 **/terraform.*
 
-.idea/
-build/
-.gradle/
+**/build
+**/.idea
+**/.gradle
