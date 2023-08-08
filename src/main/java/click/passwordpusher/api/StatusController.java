@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusController {
 
     @GetMapping("/status")
-    public String GetStatus(){
-        return "OK";
+    public Status GetStatus(){
+        return new Status("OK");
     }
 }
+
+
