@@ -12,6 +12,6 @@ ARG DEPENDENCY=/workspace/app/build/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","click.passwordpusher.api.PasswordpusherapiApplication"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","click.passwordpusher.api.PasswordpusherapiApplication", "--server.port=80"]
 
-HEALTHCHECK CMD curl --fail http://localhost:8080/status || exit
+HEALTHCHECK CMD curl --fail http://localhost:80/status || exit
