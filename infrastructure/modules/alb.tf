@@ -15,7 +15,7 @@ resource "aws_alb_target_group" "alb_public_webservice_target_group" {
   health_check {
     healthy_threshold   = "3"
     interval            = "15"
-    path                = "/healthz"
+    path                = "/status"
     protocol            = "HTTP"
     unhealthy_threshold = "10"
     timeout             = "10"
