@@ -41,17 +41,7 @@ resource "aws_budgets_budget" "budget_account" {
 
   notification {
     comparison_operator = "GREATER_THAN"
-    threshold           = 100
-    threshold_type      = "PERCENTAGE"
-    notification_type   = "FORECASTED"
-    subscriber_sns_topic_arns = [
-      aws_sns_topic.account_billing_alarm_topic.arn
-    ]
-  }
-
-  notification {
-    comparison_operator = "GREATER_THAN"
-    threshold           = 70
+    threshold           = 85
     threshold_type      = "PERCENTAGE"
     notification_type   = "ACTUAL"
     subscriber_sns_topic_arns = [
