@@ -62,7 +62,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   security:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -75,7 +74,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk.sarif
+          args: --sarif-file-output=snyk.sarif --severity-threshold=high
+          command: test
       - name: Snyk - Docker
         continue-on-error: true
         uses: snyk/actions/docker@master
@@ -83,13 +83,15 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{fromJson(needs.build.outputs.dockerMetaJson).tags[0]}}
-          args: --file=Dockerfile
+          args: --file=Dockerfile --severity-threshold=high
+          command: test
       - name: Snyk - Infrastructure
         uses: snyk/actions/iac@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --scan=resource-changes
+          args: --scan=resource-changes --severity-threshold=high --report
+          command: test
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -98,7 +100,7 @@ jobs:
     name: Plan And Deploy
     runs-on: ubuntu-latest
     environment: dev
-    needs: build
+    needs: [build,security]
     defaults:
       run:
         working-directory: ${{ env.tf_actions_working_dir }}
