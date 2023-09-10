@@ -75,6 +75,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --sarif-file-output=snyk.sarif
+          command: test
       - name: Snyk - Docker
         continue-on-error: true
         uses: snyk/actions/docker@master
@@ -83,12 +84,14 @@ jobs:
         with:
           image: ${{fromJson(needs.build.outputs.dockerMetaJson).tags[0]}}
           args: --file=Dockerfile
+          command: test
       - name: Snyk - Infrastructure
         uses: snyk/actions/iac@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --scan=resource-changes
+          command: test
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
