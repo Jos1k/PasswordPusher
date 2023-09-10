@@ -17,7 +17,7 @@ That is suppose to be a pet project for building small but usefull service to he
 - [![Build and Deploy Dev](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml/badge.svg?branch=main)](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml)
 - [![Deploy Prod](https://github.com/Jos1k/PasswordPusher/actions/workflows/deployProd.yml/badge.svg?branch=main)](https://github.com/Jos1k/PasswordPusher/actions/workflows/deployProd.yml)
 - [![Delete old container images](https://github.com/Jos1k/PasswordPusher/actions/workflows/deleteOldContainerImages.yml/badge.svg?branch=main)](https://github.com/Jos1k/PasswordPusher/actions/workflows/deleteOldContainerImages.yml)
-
+- [![Known Vulnerabilities](https://snyk.io/test/github/Jos1k/PasswordPusher/badge.svg)](https://snyk.io/test/github/Jos1k/PasswordPusher)
 ## Architecture
 ![Architecture](./docs/password-pusher.png)
 
