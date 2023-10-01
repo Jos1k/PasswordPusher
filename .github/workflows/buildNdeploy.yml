@@ -46,7 +46,6 @@ jobs:
           path: app.jar
   test:
     name: Run Tests
-    needs: build
     runs-on: ubuntu-latest
     environment: dev
     steps:
