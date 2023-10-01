@@ -26,6 +26,44 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      -
+        name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      -
+        name: Run build with Gradle Wrapper
+        run: ./gradlew bootJar
+      -
+        name: Copy Jar file
+        run: mv build/libs/$(ls build/libs) app.jar
+      -
+        name: Upload Jar file artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: jar-file
+          path: app.jar
+  dockerBuildAndPublish:
+    name: Build and Publish Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    environment: dev
+    outputs:
+      dockerMetaJson: ${{ steps.meta.outputs.json }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: jar-file
+          path: app.jar
+      -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -62,8 +100,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   security:
+    name: Run Security Scan
     runs-on: ubuntu-latest
-    needs: build
+    needs: dockerBuildAndPublish
     steps:
       -
         name: Checkout
