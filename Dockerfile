@@ -7,4 +7,4 @@ WORKDIR /app
 
 ENTRYPOINT ["java","-jar","app.jar", "--server.port=80"]
 
-HEALTHCHECK CMD curl --fail http://localhost:80/status || exit
+HEALTHCHECK CMD curl --fail http://localhost:80/actuator/health || exit
