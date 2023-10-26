@@ -1,4 +1,4 @@
-package click.passwordpusher.api;
+package passwordpusher;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
