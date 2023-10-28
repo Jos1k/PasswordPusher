@@ -1,10 +1,10 @@
 package passwordpusher.core.ports.in;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import passwordpusher.core.model.Password;
 import passwordpusher.core.ports.out.PasswordRepository;
 
-@Component
+@Service
 public class PasswordService {
     private final PasswordRepository passwordRepository;
 
@@ -15,7 +15,7 @@ public class PasswordService {
     public Password push(String value){
         var passwordId = java.util.UUID.randomUUID();
         var password = new Password(passwordId.toString(), value);
-        passwordRepository.Create(password);
+        passwordRepository.create(password);
         return password;
     }
 }

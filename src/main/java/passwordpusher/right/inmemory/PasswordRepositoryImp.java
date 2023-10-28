@@ -1,17 +1,17 @@
 package passwordpusher.right.inmemory;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import passwordpusher.core.model.Password;
 import passwordpusher.core.ports.out.PasswordRepository;
 
 import java.util.ArrayList;
 
-@Component
+@Repository
 public class PasswordRepositoryImp implements PasswordRepository {
     private final static ArrayList<Password> passwords = new ArrayList<>();
 
     @Override
-    public void Create(Password password) {
+    public void create(Password password) {
         passwords.add(password);
     }
 }
