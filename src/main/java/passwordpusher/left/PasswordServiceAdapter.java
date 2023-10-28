@@ -16,4 +16,8 @@ public class PasswordServiceAdapter {
         var result = passwordService.push(command.value());
         return new PasswordCreated(result.id());
     }
+
+    public PasswordRetrieved retrieve(String passwordId) {
+        return null;
+    }
 }
