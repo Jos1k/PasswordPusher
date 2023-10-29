@@ -3,15 +3,15 @@ That is suppose to be a pet project for building small but usefull service to he
 
 ## Decisions and choices:
 - Infrastructure - AWS (because of Free Tier, this is a pet project, so the budget is pretty limited 😜)
-- Technologies - [Springboot](https://spring.io/), [Gradle(via Kotlin)](https://gradle.org/), [React](https://react.dev), [Terraform](https://www.terraform.io/), [Docker](https://docker.io/)
+- Technologies - [Springboot](https://spring.io/), [Gradle](https://gradle.org/), [React](https://react.dev), [Terraform](https://www.terraform.io/), [Docker](https://docker.io/)
 - Diagram - [Excalidraw](https://excalidraw.com)
 - CI/CD - [Github Actions](https://github.com/features/actions)
 - Observability - [AWS CloudWatch](https://aws.amazon.com/cloudwatch/)(at least at the beginning), but with a plan to connect [NewRelic](https://newrelic.com/)
 - Docker container registry - [GitHub Packages](https://github.com/features/packages)
 
 ## Environments:
-- Development - https://dev.pw-pusher.click
-- Production - https://pw-pusher.click
+- Development - https://dev.pw-pusher.click/swagger-ui/index.html
+- Production - https://pw-pusher.click/swagger-ui/index.html
 
 ## Continious Integration/Deployment
 - [![Build and Deploy Dev](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml/badge.svg?branch=main)](https://github.com/Jos1k/PasswordPusher/actions/workflows/buildNdeploy.yml)

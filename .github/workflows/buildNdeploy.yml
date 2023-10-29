@@ -58,7 +58,7 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Run build with Gradle Wrapper
+      - name: Run Tests
         run: ./gradlew clean test --info
   dockerBuildAndPublish:
     name: Create and Publish Docker Image
@@ -76,7 +76,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: jar-file
-#          path: app.jar
       -
         name: Docker meta
         id: meta
