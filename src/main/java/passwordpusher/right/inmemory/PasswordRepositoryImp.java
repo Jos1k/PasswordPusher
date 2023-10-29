@@ -14,4 +14,13 @@ public class PasswordRepositoryImp implements PasswordRepository {
     public void create(Password password) {
         passwords.add(password);
     }
+
+    @Override
+    public Password get(String passwordId) {
+        return passwords
+                .stream()
+                .filter(x->x.id() == passwordId)
+                .findFirst()
+                .get();
+    }
 }

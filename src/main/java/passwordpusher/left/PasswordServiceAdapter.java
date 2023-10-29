@@ -18,6 +18,8 @@ public class PasswordServiceAdapter {
     }
 
     public PasswordRetrieved retrieve(String passwordId) {
-        return null;
+        var result = passwordService.retrieve(passwordId);
+
+        return new PasswordRetrieved(result.id(), result.value());
     }
 }

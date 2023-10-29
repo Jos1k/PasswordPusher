@@ -18,4 +18,8 @@ public class PasswordService {
         passwordRepository.create(password);
         return password;
     }
+
+    public Password retrieve(String passwordId) {
+        return passwordRepository.get(passwordId);
+    }
 }
