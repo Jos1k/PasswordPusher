@@ -3,9 +3,6 @@ name: Destroy Dev
 on:
   workflow_dispatch:
     inputs:
-      version_tag:
-        description: 'Version (tag)'
-        required: true
 
 env:
   REGISTRY: ghcr.io/jos1k/passwordpusher-api
@@ -25,8 +22,6 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{inputs.version_tag}}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
